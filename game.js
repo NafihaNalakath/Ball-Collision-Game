@@ -1,6 +1,25 @@
 var canvas = $("#game")[0];
 console.log(canvas);
 
+const description = [
+    "Easy Peasy",
+    "Still Quite Easy",
+    "Fun Begins",
+    "Sweaty Palms",
+    "In Traffic",
+    "Threading Needles",
+    "Blitzing Arm",
+    "STILL ALIVE? HOW??",
+    "Godlike Reflexes",
+    "Ninja",
+    "Greatest of All Time",
+    "Greatest of All Time",
+    "Greatest of All Time",
+    "Greatest of All Time",
+    "Greatest of All Time",
+];
+
+// Initialize Game.
 const canvaswidth = 400;
 const canvasheight = 600;
 var radius = 10;
@@ -13,18 +32,26 @@ canvas.width = canvaswidth;
 canvas.height = canvasheight;
 
 const c = canvas.getContext('2d');
+const audio = new Audio('audio.mp3');
+audio.loop = true;
+const hitsound = new Audio('ball.mp3');
+hitsound.volume = 0.5;
 
 // Initial play button realign
 const playb = $("#play");
 const replay = $("#again");
 const result = $("#result");
 const memo = $("#memo");
+const hard = $("#hard");
 
 function initcontent(){
     let parentoffset = $(".col-lg-10").offset();
     let resultoffset = $("#game").offset();
     console.log(resultoffset);
-    
+    hard.css({
+        left: canvaswidth / 2 + resultoffset.left - parentoffset.left - 60,
+        top: canvasheight / 2 + resultoffset.top - parentoffset.top - 50,
+    });
     playb.css({
         left: canvaswidth / 2 + resultoffset.left - parentoffset.left - 35,
         top: canvasheight / 2 + resultoffset.top - parentoffset.top - 100,
@@ -52,7 +79,7 @@ class Circle{
         var direction = Math.random() * 2 * Math.PI;
         this.vx = speed * Math.cos(direction);
         this.vy = speed * Math.sin(direction);
-        this.color = '#8A2BE2';
+        this.color = "blue";
     }
 
     draw(c){
@@ -94,7 +121,7 @@ var mouseball = {
     draw(c) {
         c.beginPath();
         c.arc(this.x, this.y, radius, 0, Math.PI * 2, 0);
-        c.fillStyle = '#00FA9A';
+        c.fillStyle = "red";
         c.fill();
     }
 }
@@ -129,6 +156,7 @@ canvas.addEventListener('mousemove',
         var offset = $(this).offset();
         mouseball.x = event.pageX - offset.left;
         mouseball.y = event.pageY - offset.top;
+        // console.log(mouseball);
         mouseball.x = (mouseball.x < radius) ? radius : mouseball.x;
         mouseball.x = (mouseball.x > canvaswidth - radius) ? canvaswidth - radius : mouseball.x;
         mouseball.y = (mouseball.y < radius) ? radius : mouseball.y;
@@ -141,6 +169,7 @@ canvas.addEventListener('touchmove', function(event){
     var offset = $(this).offset();
     mouseball.x = event.pageX - offset.left;
     mouseball.y = event.pageY - offset.top;
+    // console.log(mouseball);
     mouseball.x = (mouseball.x < radius) ? radius : mouseball.x;
     mouseball.x = (mouseball.x > canvaswidth - radius) ? canvaswidth - radius : mouseball.x;
     mouseball.y = (mouseball.y < radius) ? radius : mouseball.y;
@@ -149,11 +178,12 @@ canvas.addEventListener('touchmove', function(event){
 
 function collision(ballarr){
     for (var i = 0; i < ballarr.length; i++) {
+        // Check if collided with mouseball
         var dist = (ballarr[i].x - mouseball.x) ** 2 + (ballarr[i].y - mouseball.y) ** 2
         if (dist < 4*radius**2) {
             console.log("you have crashed!!");
             alive = false;
-            
+            audio.pause();
         }
         for (var j = i + 1; j < ballarr.length; j++) {
             var dist = (ballarr[i].x - ballarr[j].x) ** 2 + (ballarr[i].y - ballarr[j].y) ** 2
@@ -162,10 +192,12 @@ function collision(ballarr){
                 var d_rel = [ballarr[i].x - ballarr[j].x, ballarr[i].y - ballarr[j].y];
                 var v_rel = [ballarr[i].vx - ballarr[j].vx, ballarr[i].vy - ballarr[j].vy];
                 dist = Math.sqrt(dist);
+                // Remove collision
                 ballarr[i].x += d_rel[0] * (1 - dist / (2 * radius)) / 2;
                 ballarr[i].y += d_rel[1] * (1 - dist / (2 * radius)) / 2;
                 ballarr[j].x -= d_rel[0] * (1 - dist / (2 * radius)) / 2;
                 ballarr[j].y -= d_rel[1] * (1 - dist / (2 * radius)) / 2;
+                // Momentum Vector of the center of Mass
                 var v_cm = [(ballarr[i].vx + ballarr[j].vx) / 2, (ballarr[i].vy + ballarr[j].vy) / 2]
                 var dd_rel = d_rel[0] ** 2 + d_rel[1] ** 2;
                 var vd_rel = v_rel[0] * d_rel[0] + v_rel[1] * d_rel[1];
@@ -233,14 +265,14 @@ function startGame(){
     $("#game").css({
         cursor: "none",
     })
-    
+    audio.currentTime = 0;
     gameid += 1;
     let gamestamp = gameid;
     window.ballnum = startnum;
     alive = true;
     ballarr = []
     initgame();
-    
+    audio.play();
     setTimeout(animate, 2000)
     setTimeout(function () {
         addBall(gamestamp);
@@ -268,7 +300,7 @@ function endGame() {
     handball.x = mouseball.x;
     handball.y = mouseball.y;
     handball.vx = handball.vy = 0;
-    handball.color = '#00FA9A';
+    handball.color = "red";
     ballarr.push(handball);
     var large = (hardmode) ? " large" : "";
     result.html("You made it to " + ballnum + large + " balls, lasted " + Math.floor(elapsed / 1000) + " seconds");
@@ -296,6 +328,7 @@ function endGame() {
 }
 
 replay.click(function(){
+    hardmode = false;
     radius = 10;
     startGame();
     memo.hide();
@@ -304,7 +337,15 @@ replay.click(function(){
     hard.hide();
 })
 
-
+hard.click(function () {
+    hardmode = true;
+    radius = 20;
+    startGame();
+    memo.hide();
+    replay.hide();
+    result.hide();
+    hard.hide();
+})
 
 playb.click(function () {
     startGame();
