@@ -1,0 +1,1 @@
+var canvas = $("#game")[0];
