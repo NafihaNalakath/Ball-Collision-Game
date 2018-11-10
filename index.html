@@ -4,9 +4,26 @@
 
 <head>
     <title>Particle Game</title>
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <script src="jquery.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <!-- Custom styles for this template -->
 </head>
 
 <body>
+    <div class="container" >
+    <div class="row" >
+        <div class="col-lg-10 mx-auto">
+            <h1 class="text-center "> <kbd>Particle Game </kbd></h1>
+            <canvas id="game"></canvas>
+            <p class="lead gametext result" ></p>
+            <p class="lead gametext note" >Instructions</p>
+            <button class='btn text-center' id="play"> Play </button>
+            <button class='btn text-center' id="again"> Restart </button>
+        </div>
+    </div>
+</div>
 </body>
 <script src="game.js"></script>
 </html>
