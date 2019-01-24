@@ -1,15 +1,1 @@
-
-Hello from Orange Free Sounds,
-
-
-Stock audio - Free sound effects, loops and music.
- 
-
-There are no hidden costs or need to sign-up. 
-
-
-
-License: The sound effect is permitted for non-commercial use under license “Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
-
-
-http://www.orangefreesounds.com/
+A ball to ball collision game, In the first stage of the game there will be three balls along with a master ball inside a box, the ultimate aim of the game is to protect the master ball from colliding with the rest of the balls which will be moving around. As the game progress further the number of balls keeps increasing inside the box. This ball to ball collision game can be explained from the conservation of momentum point of view. To detect whether two balls collide, we check whether the distance between their centers is less than two times the radius. You can get the collision components by creating a unit vector pointing in the direction from one ball to the other, then taking the dot product with the velocity vectors of the balls. The game developed using php,JavaScript.
