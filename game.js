@@ -20,8 +20,8 @@ const description = [
 ];
 
 // Initialize Game.
-const canvaswidth = 400;
-const canvasheight = 600;
+const canvaswidth = 500;
+const canvasheight = 500;
 var radius = 10;
 const startnum = 3;
 const speed = 5;
@@ -32,12 +32,13 @@ canvas.width = canvaswidth;
 canvas.height = canvasheight;
 
 const c = canvas.getContext('2d');
-const audio = new Audio('audio.mp3');
+const audio = new Audio('bg.mp3');
 audio.loop = true;
-const hitsound = new Audio('ball.mp3');
+const hitsound = new Audio('audio.mp3');
 hitsound.volume = 0.5;
 
 // Initial play button realign
+const inst = $("#myBtn");
 const playb = $("#play");
 const replay = $("#again");
 const result = $("#result");
@@ -291,8 +292,12 @@ function endGame() {
         data: {
             "score" : elapsed,
             "hardmode" : hardmode,
+
+
         },
-        success: function(){
+        success: function(response){
+            console.log(response);
+            $('#highscore').text(response);
             console.log("Your score has been recorded");
         }
     })
@@ -303,7 +308,8 @@ function endGame() {
     handball.color = "red";
     ballarr.push(handball);
     var large = (hardmode) ? " large" : "";
-    result.html("You made it to " + ballnum + large + " balls, lasted " + Math.floor(elapsed / 1000) + " seconds");
+    result.html("");
+    result.html("<h3>Score:"+elapsed+"<h3><br>You made it to " + ballnum + large + " balls, lasted " + Math.floor(elapsed / 1000) + " seconds");
     result.show();
     hard.show();
     memo.show();
@@ -350,5 +356,8 @@ hard.click(function () {
 playb.click(function () {
     startGame();
     memo.hide();
+    inst.hide();
     playb.hide();
 })
+
+
